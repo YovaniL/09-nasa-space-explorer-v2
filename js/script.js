@@ -59,13 +59,24 @@ document.addEventListener('DOMContentLoaded', () => {
 	didYouKnowEl.textContent = `Did you know? ${fact}`;
 });
 
-// Show/hide loading
+// Show/hide loading with animation
 function showLoading(message = 'Loading images…') {
-	loading.hidden = false;
 	loading.textContent = message;
+	loading.hidden = false;
+	loading.style.opacity = '0';
+	// Trigger fade in
+	requestAnimationFrame(() => {
+		loading.style.transition = 'opacity 0.3s ease';
+		loading.style.opacity = '1';
+	});
 }
+
 function hideLoading() {
-	loading.hidden = true;
+	loading.style.opacity = '0';
+	// Remove element after fade out
+	setTimeout(() => {
+		loading.hidden = true;
+	}, 300);
 }
 
 // Render helpers
@@ -282,10 +293,11 @@ getImageBtn.addEventListener('click', async () => {
 
 	const apiKey = apiKeyInput.value.trim() || 'DEMO_KEY';
 
-		// show a loading message inside the gallery so users know images are on the way
+		// Clear the gallery and show loading message
 		clearGallery();
+		showLoading('Loading space photos…');
+		// Also show loading indicator in the gallery itself
 		gallery.innerHTML = `<div class="placeholder"><p>🔄 Loading space photos…</p></div>`;
-		showLoading('Loading APOD entries…');
 
 	try {
 		// fetch the CDN JSON (array of APOD-like objects) and filter locally
